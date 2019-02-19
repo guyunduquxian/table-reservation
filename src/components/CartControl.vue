@@ -1,8 +1,8 @@
 <template>
     <div class="cartControl">
-        <i v-show="foods.count" class="iconfont icon-Minus" @click="sub"></i>
+        <i v-show="foods.count" class="iconfont icon-Minus" @click.stop="sub"></i>
         <span v-show="foods.count" ref="num">{{ foods.count }}</span>
-        <i class="iconfont icon-Add" @click="add"></i>
+        <i class="iconfont icon-Add" @click.stop="add"></i>
     </div>
 
 </template>

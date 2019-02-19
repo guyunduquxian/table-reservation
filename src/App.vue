@@ -17,8 +17,8 @@
     height: 100%;
 
     &::-webkit-scrollbar {
-        width:0;
-        height:0;
+        width: 0;
+        height: 0;
     }
   }
 
