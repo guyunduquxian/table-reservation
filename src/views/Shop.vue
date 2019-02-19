@@ -1,12 +1,20 @@
 <template>
     <div class="shop">
-        <v-header></v-header>
+        <v-header :seller="seller"></v-header>
         <div class="tab-wrapper">
             <div class="tab">
-                <div v-for="(item, index) in tabData" :key="index" class="tab-item" :class="{ active: select === index }" @click="changeSelect(index)">{{item}}</div> 
+                <div v-for="(item, index) in tabData" :key="index" class="tab-item" :class="{ active: select === index }" @click="changeSelect(index)">{{ item }}</div> 
             </div>
             <div class="tab-content">
-                <v-goods @send="handle"></v-goods>
+                <div v-show="select === 0">
+                    <v-goods @send="handle"></v-goods>
+                </div>
+                <div v-show="select === 1">
+                    <v-ratings :seller="seller"></v-ratings>
+                </div>
+                <div v-show="select === 2">
+                    <v-seller :seller="seller"></v-seller>
+                </div> 
             </div>
         </div>
     </div>
@@ -15,18 +23,33 @@
 <script>
 import Header from '@/components/Header.vue'
 import Goods from '@/components/Goods.vue'
+import Ratings from '@/components/Ratings.vue'
+import Seller from '@/components/Seller.vue'
 
 export default {
     name: 'shop',
     components: {
         'v-header': Header,
-        'v-goods': Goods
+        'v-goods': Goods,
+        'v-ratings': Ratings,
+        'v-seller': Seller
     },
     data() {
       return {
         tabData: ["商品","评论","商家"],  
-        select: 0
+        select: 0,
+        seller: {}
       }
+    },
+    created() {
+        this.$axios.get("/api/index")
+        .then( res => {
+            // console.log(res.data.seller);
+            this.seller = res.data.seller;
+        })
+        .catch( error => {
+            console.log(error);
+        });
     },
     methods: {
       changeSelect(index) {
@@ -55,7 +78,8 @@ export default {
             .tab {
                 display: flex;
                 height: 40px;
-                border: 1px solid rgba(7, 17, 27, 0.1);
+                box-sizing: border-box;
+                border-bottom: 1px solid rgba(7, 17, 27, 0.1);
 
                 .tab-item {
                     flex: 1;

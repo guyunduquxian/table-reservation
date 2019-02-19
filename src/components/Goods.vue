@@ -19,7 +19,7 @@
         <li v-for="(group, groupIndex) in goods" :key="groupIndex" class="food-list" ref="foodItem">
           <h1 class="title">{{group.name}}</h1>
           <ul>
-            <li v-for="(item, index) in group.foods" :key="index" class="food-item">
+            <li v-for="(item, index) in group.foods" :key="index" class="food-item" @click="FoodDetail(item)">
               <div class="icon">
                 <img width="60" height="60" :src="item.icon">
               </div>
@@ -35,7 +35,9 @@
                         <span class="now">￥{{item.price}} </span>
                         <span class="old" v-if="item.oldPrice">￥{{item.oldPrice}}</span>
                     </div>
-                    <v-cartControl :foods="item"></v-cartControl>
+                    <div class="cartcontrol-wrapper">
+                        <v-cartControl :foods="item"></v-cartControl>
+                    </div>
                 </div>
               </div>
             </li>
@@ -43,8 +45,12 @@
         </li>
       </ul>
     </div>
-    <v-shopCart :foodsList="selectFoods"></v-shopCart>
-
+    <div class="shopCart-wrap">
+        <v-shopCart :foodsList="selectFoods"></v-shopCart>
+    </div>
+    <div class="food-wrap">
+        <v-foodDetail :food="selectFood" ref="foods"></v-foodDetail>
+    </div>
   </div>
 
 </template>
@@ -52,11 +58,13 @@
 <script>
   import CartControl from "@/components/CartControl.vue";
   import ShopCart from "@/components/ShopCart.vue";
+  import FoodDetail from '@/components/FoodDetail.vue';
 
   export default {
     components: {
       'v-shopCart': ShopCart,
-      'v-cartControl': CartControl
+      'v-cartControl': CartControl,
+      'v-foodDetail': FoodDetail
     },
     data() {
       return {
@@ -64,7 +72,9 @@
         listHeight: [],
         changValue: 0,
         scrollY: 0,
-        classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+        classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
+        selectFood: {},
+        foodShow: false
       }
     },
     computed: {
@@ -130,6 +140,10 @@
             document.body.scrollTop = 134;
             // this.currentIndex = index;
             this.$refs.foodsWrap.scrollTop = this.listHeight[index];
+        },
+        FoodDetail(food) {
+            this.selectFood = food;
+            this.$refs.foods.show();
         }
     }
   }
@@ -142,8 +156,9 @@
         position: absolute;
         top: 40px;
         left: 0;
-        bottom: 48px;
-
+        bottom: 0;
+        margin-bottom: 48px;
+        
         .menu-wrapper {
             width: 80px;
             background-color: #f3f5f7;
@@ -234,6 +249,8 @@
                     margin: 18px;
                     padding-bottom: 18px;
                     border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+                    position: relative;
+                    z-index: 0;
 
                     &:last-child {
                         margin-bottom: 0;
@@ -293,10 +310,34 @@
                                     color: rgb(147, 153, 159);
                                 }
                             }
+
+                            .cartcontrol-wrapper {
+                                position: absolute;
+                                right: 0;
+                                z-index: 10;
+                            }
                         }   
                     }
                 }
             }
+        }
+
+        .shopCart-wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 99;
+        }
+
+        .food-wrap {
+            // position: fixed;
+            // top: 0;
+            // left: 0;
+            // width: 100%;
+            // height: 100%;
+            // z-index: 89;
         }
     }
 </style>

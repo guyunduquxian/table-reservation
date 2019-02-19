@@ -1,18 +1,20 @@
 <template>
   <div class="shopCart">
-    <div class="content">
-      <div class="content-left" @click="toggleList">
-        <div class="icon-wrapper">
-          <div class="icon" :class="{highlight: foodsSum > 0}">
-            <i class="iconfont icon-gouwuche" :class="{ highlight: foodsSum > 0}"></i>
+    <div class="content-wrap">
+      <div class="content">
+        <div class="content-left" @click="toggleList">
+          <div class="icon-wrapper">
+            <div class="icon" :class="{highlight: foodsSum > 0}">
+              <i class="iconfont icon-gouwuche" :class="{ highlight: foodsSum > 0}"></i>
+            </div>
+            <div v-show="foodsSum>0" class="num">{{ foodsSum }}</div>
           </div>
-          <div v-show="foodsSum>0" class="num">{{ foodsSum }}</div>
+          <div class="price">￥{{ money }}</div> 
+          <div class="desc">另需配送费￥12元</div>
         </div>
-        <div class="price">￥{{ money }}</div> 
-        <div class="desc">另需配送费￥12元</div>
-      </div>
-      <div class="content-right">
-        <div class="pay"> ￥20元起送 </div>
+        <div class="content-right">
+          <div class="pay" :class="payClass"> {{ payDesc }} </div>
+        </div>
       </div>
     </div>
     <!-- <div class="ball-container">
@@ -59,7 +61,8 @@
     },
     data() {
       return {
-         fold: true
+         fold: true,
+         diffPrice: 20
       }
     },
     watch: {
@@ -86,6 +89,23 @@
               return false;
             }
             return !this.fold;
+        },
+        payDesc() {
+            if(this.money === 0) {
+                return `￥${this.diffPrice}元起送`;
+            } else if(this.money < this.diffPrice) {
+                let diff = this.diffPrice - this.money;
+                return `还差￥${diff}元起送`;
+            } else {
+                return `去结算`;
+            }
+        },
+        payClass() {
+            if(this.money < this.diffPrice) {
+                return 'not-enough';
+            } else {
+                return 'enough';
+            }
         }
     },
     created() {
@@ -113,113 +133,116 @@
 
 <style lang="scss" scoped>
   .shopCart {
-    width: 100%;
-    height: 48px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    z-index: 50;
 
-    .content {
-      background-color: #141d27;
-      color: rgba(255, 255, 255, 0.4);
-      display: flex;
+    .content-wrap {
       position: relative;
       z-index: 40;
+      padding-top: 12px;
+      background-color: #fff;
 
-      .content-left {
-        flex: 1;
+      .content {
+        background-color: #141d27;
+        color: rgba(255, 255, 255, 0.4);
         display: flex;
 
-        .icon-wrapper {
-          position: relative;
-          top: -10px;
-          margin: 0 12px;
-          padding: 6px;
-          width: 56px;
-          height: 56px;
-          box-sizing: border-box;
-          border-radius: 50%;
-          background-color: #141d27;
-          min-width: 56px;
+        .content-left {
+          flex: 1;
+          display: flex;
 
-          .icon {
-            width: 100%;
-            height: 100%;
+          .icon-wrapper {
+            position: relative;
+            top: -10px;
+            margin: 0 12px;
+            padding: 6px;
+            width: 56px;
+            height: 56px;
+            box-sizing: border-box;
             border-radius: 50%;
-            text-align: center;
-            background-color: #2b343c;
+            background-color: #141d27;
+            min-width: 56px;
 
-            &.highlight {
-              background: rgb(0, 160, 220);
-            }
+            .icon {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              text-align: center;
+              background-color: #2b343c;
 
-            .icon-gouwuche {
-              line-height: 44px;
-              font-size: 24px;
-              color: #80858a;
-              
               &.highlight {
-                color: #fff;
+                background: rgb(0, 160, 220);
+              }
+
+              .icon-gouwuche {
+                line-height: 44px;
+                font-size: 24px;
+                color: #80858a;
+                
+                &.highlight {
+                  color: #fff;
+                }
               }
             }
+
+            .num {
+              position: absolute;
+              top: 0;
+              right: 0;
+              min-width: 16px;
+              height: 16px;
+              line-height: 16px;
+              text-align: center;
+              border-radius: 16px;
+              font-size: 12px;
+              color: #fff;
+              background-color: rgb(240, 20, 20);
+              padding: 0 5px;
+              box-sizing: border-box;
+              font-weight: 700;
+            }
           }
 
-          .num {
-            position: absolute;
-            top: 0;
-            right: 0;
-            min-width: 16px;
-            height: 16px;
-            line-height: 16px;
-            text-align: center;
-            border-radius: 16px;
-            font-size: 12px;
-            color: #fff;
-            background-color: rgb(240, 20, 20);
-            padding: 0 5px;
-            box-sizing: border-box;
+          .price {
+            line-height: 48px;
+            padding-right: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 16px;
             font-weight: 700;
+
+            &.highlight {
+              color: #fff;
+            }
+          }
+
+          .desc {
+            height: 48px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            line-height: 16px;
+            font-size: 12px;
           }
         }
 
-        .price {
-          line-height: 48px;
-          padding-right: 12px;
-          border-right: 1px solid rgba(255, 255, 255, 0.1);
-          font-size: 16px;
-          font-weight: 700;
-
-          &.highlight {
+        .content-right {
+          width: 100px;
+        
+          .pay {
+            height: 48px;
+            line-height: 48px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
             color: #fff;
-          }
-        }
+            background-color: #2b333b;
 
-        .desc {
-          height: 48px;
-          padding: 0 12px;
-          box-sizing: border-box;
-          display: flex;
-          align-items: center;
-          line-height: 16px;
-          font-size: 12px;
-        }
-      }
+            &.not-enough {
+              background-color: #2b333b; 
+            }
 
-      .content-right {
-        width: 100px;
-      
-        .pay {
-          height: 48px;
-          line-height: 48px;
-          text-align: center;
-          font-size: 12px;
-          font-weight: 700;
-          color: #fff;
-          background-color: #2b333b;
-
-          &.enough {
-            background-color: #00b43c;
+            &.enough {
+              background-color: #00b43c;
+            }
           }
         }
       }
@@ -291,7 +314,7 @@
 
         .list-content {
           width: 100%;
-          padding: 0 18px 12px;
+          padding: 0 18px;
           background: #fff;
           box-sizing: border-box;
           overflow-y: auto;

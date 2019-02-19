@@ -75,22 +75,17 @@
     components: {
       VStar: Star
     },
+    props: {
+       seller: Object
+    },
     data() {
       return {
-          seller: {},
           classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
           detailShow: false
       }
     },
     created() {
-        this.$axios.get("/api/index")
-        .then( res => {
-            console.log(res.data);
-            this.seller = res.data.seller;
-        })
-        .catch( error => {
-            console.log(error);
-        });
+       
     },
     methods: {
         showDetail() {
