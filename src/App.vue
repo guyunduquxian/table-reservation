@@ -15,11 +15,6 @@
 <style lang="scss">
   html, body {
     height: 100%;
-
-    &::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-    }
   }
 
   #app {
